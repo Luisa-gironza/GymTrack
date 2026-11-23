@@ -63,10 +63,10 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: TEMA.fondo,
     color: TEMA.textoPrimario,
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: TEMA.borde,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 12,
     minHeight: 48,
     fontSize: 15,

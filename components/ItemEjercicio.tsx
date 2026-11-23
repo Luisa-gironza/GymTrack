@@ -1,5 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Animated, StyleSheet, Text, View } from 'react-native';
+import { BotonAnimado } from '@/components/BotonAnimado';
 import { NOMBRES_GRUPO, TEMA } from '@/constants/colores';
 import type { Ejercicio } from '@/types/gym';
 
@@ -14,12 +16,35 @@ interface ItemEjercicioProps {
 
 export function ItemEjercicio({
   ejercicio,
-  colorAcento = TEMA.acento,
   completado = false,
   onAlternar,
   onAbrirDetalle,
   advertenciaLesion = false,
 }: ItemEjercicioProps) {
+  const [escalaCheck] = useState(() => new Animated.Value(1));
+
+  useEffect(() => {
+    if (!completado) return;
+    const animacion = Animated.sequence([
+      Animated.spring(escalaCheck, {
+        toValue: 1.2,
+        useNativeDriver: true,
+        speed: 34,
+        bounciness: 12,
+      }),
+      Animated.spring(escalaCheck, {
+        toValue: 1,
+        useNativeDriver: true,
+        speed: 22,
+        bounciness: 6,
+      }),
+    ]);
+    animacion.start();
+    return () => {
+      animacion.stop();
+    };
+  }, [completado, escalaCheck]);
+
   return (
     <View
       style={[
@@ -29,31 +54,35 @@ export function ItemEjercicio({
       ]}
     >
       {onAlternar !== undefined && (
-        <Pressable
+        <BotonAnimado
           onPress={onAlternar}
+          haptic={completado ? 'light' : 'success'}
+          escalaActiva={0.92}
           accessibilityRole="checkbox"
           accessibilityState={{ checked: completado }}
           accessibilityLabel={`Marcar ${ejercicio.nombre} como completado`}
           style={styles.botonCheck}
         >
-          <View
+          <Animated.View
             style={[
               styles.cajaCheck,
-              completado && { backgroundColor: colorAcento, borderColor: colorAcento },
+              completado && styles.cajaCheckActiva,
+              { transform: [{ scale: escalaCheck }] },
             ]}
           >
             {completado && (
               <Ionicons name="checkmark" size={18} color={TEMA.fondo} />
             )}
-          </View>
-        </Pressable>
+          </Animated.View>
+        </BotonAnimado>
       )}
 
-      <Pressable
+      <BotonAnimado
         onPress={onAbrirDetalle}
-        accessibilityRole="button"
+        haptic="light"
         accessibilityLabel={`Ver detalle de ${ejercicio.nombre}`}
-        style={({ pressed }) => [styles.cuerpo, pressed && styles.presionado]}
+        contenedorStyle={styles.flex}
+        style={styles.cuerpo}
       >
         <View style={styles.textos}>
           <Text
@@ -63,75 +92,79 @@ export function ItemEjercicio({
             {ejercicio.nombre}
           </Text>
           <View style={styles.metaFila}>
-            <Text style={styles.series}>
-              {ejercicio.series} × {ejercicio.repeticiones}
-            </Text>
-            <Text style={styles.separador}>·</Text>
+            <View style={styles.pillSeries}>
+              <Text style={styles.series}>
+                {ejercicio.series} × {ejercicio.repeticiones}
+              </Text>
+            </View>
             <Text style={styles.grupo}>{NOMBRES_GRUPO[ejercicio.grupo]}</Text>
           </View>
           {advertenciaLesion && (
             <View style={styles.alertaFila}>
               <Ionicons name="warning" size={15} color={TEMA.advertencia} />
               <Text style={styles.alertaTexto}>
-                Precaución: lesión registrada en {NOMBRES_GRUPO[ejercicio.grupo].toLowerCase()}
+                Precaución: lesión en {NOMBRES_GRUPO[ejercicio.grupo].toLowerCase()}
               </Text>
             </View>
           )}
         </View>
         <Ionicons name="chevron-forward" size={20} color={TEMA.textoSecundario} />
-      </Pressable>
+      </BotonAnimado>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   tarjeta: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 14,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
     overflow: 'hidden',
   },
   tarjetaCompletada: {
-    backgroundColor: 'rgba(30, 41, 59, 0.65)',
-    borderColor: TEMA.exito,
+    borderColor: TEMA.acento,
+    backgroundColor: '#141D16',
   },
   tarjetaAdvertencia: {
     borderColor: TEMA.advertencia,
   },
   botonCheck: {
-    width: 52,
-    minHeight: 56,
+    width: 56,
+    minHeight: 60,
     alignItems: 'center',
     justifyContent: 'center',
   },
   cajaCheck: {
     width: 28,
     height: 28,
-    borderRadius: 8,
+    borderRadius: 14,
     borderWidth: 2,
     borderColor: TEMA.textoSecundario,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  cajaCheckActiva: {
+    backgroundColor: TEMA.acento,
+    borderColor: TEMA.acento,
+  },
   cuerpo: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 14,
     paddingHorizontal: 14,
-    minHeight: 56,
+    minHeight: 60,
     gap: 10,
-  },
-  presionado: {
-    opacity: 0.75,
   },
   textos: {
     flex: 1,
-    gap: 4,
+    gap: 6,
   },
   nombre: {
     color: TEMA.textoPrimario,
@@ -145,16 +178,18 @@ const styles = StyleSheet.create({
   metaFila: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
+  },
+  pillSeries: {
+    backgroundColor: TEMA.acentoFondo,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
   },
   series: {
     color: TEMA.acento,
     fontSize: 14,
     fontWeight: '700',
-  },
-  separador: {
-    color: TEMA.textoApagado,
-    fontSize: 14,
   },
   grupo: {
     color: TEMA.textoSecundario,
@@ -164,7 +199,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 4,
+    marginTop: 2,
   },
   alertaTexto: {
     color: TEMA.advertencia,

@@ -3,6 +3,7 @@ import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AlertaLesion } from '@/components/AlertaLesion';
 import { DetalleEjercicioCard } from '@/components/DetalleEjercicioCard';
+import { EntradaAnimada } from '@/components/EntradaAnimada';
 import { PantallaError } from '@/components/PantallaError';
 import { TemporizadorDescanso } from '@/components/TemporizadorDescanso';
 import { estilosComunes } from '@/constants/estilos';
@@ -40,18 +41,24 @@ export default function EjercicioScreen() {
         showsVerticalScrollIndicator={false}
       >
         {tieneLesion && (
-          <AlertaLesion grupo={ejercicio.grupo} observaciones={socio.observaciones} />
+          <EntradaAnimada indice={0}>
+            <AlertaLesion grupo={ejercicio.grupo} observaciones={socio.observaciones} />
+          </EntradaAnimada>
         )}
 
-        <DetalleEjercicioCard
-          ejercicio={ejercicio}
-          diasAsignados={diasAsignados}
-          onAbrirDia={(dia) =>
-            router.push({ pathname: '/dia/[dia]', params: { dia } })
-          }
-        />
+        <EntradaAnimada indice={1}>
+          <DetalleEjercicioCard
+            ejercicio={ejercicio}
+            diasAsignados={diasAsignados}
+            onAbrirDia={(dia) =>
+              router.push({ pathname: '/dia/[dia]', params: { dia } })
+            }
+          />
+        </EntradaAnimada>
 
-        <TemporizadorDescanso colorAcento={diasAsignados[0]?.color} />
+        <EntradaAnimada indice={2}>
+          <TemporizadorDescanso colorAcento={diasAsignados[0]?.color} />
+        </EntradaAnimada>
       </ScrollView>
     </SafeAreaView>
   );

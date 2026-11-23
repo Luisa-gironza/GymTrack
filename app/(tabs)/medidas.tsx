@@ -3,13 +3,14 @@ import { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BotonAnimado } from '@/components/BotonAnimado';
+import { EntradaAnimada } from '@/components/EntradaAnimada';
 import { FormularioMedida } from '@/components/FormularioMedida';
 import { ResumenMedida } from '@/components/ResumenMedida';
 import { TarjetaMedida } from '@/components/TarjetaMedida';
@@ -43,39 +44,40 @@ export default function MedidasScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={estilosComunes.encabezado}>
-            <Text style={estilosComunes.tituloPantalla}>Medidas mensuales</Text>
+            <Text style={estilosComunes.tituloPantalla}>Medidas</Text>
             <Text style={estilosComunes.subtituloPantalla}>
               Seguimiento de peso, IMC (OMS) y 8 perímetros corporales
             </Text>
           </View>
 
           {ultima !== undefined && (
-            <ResumenMedida actual={ultima} anterior={anterior} />
+            <EntradaAnimada indice={0}>
+              <ResumenMedida actual={ultima} anterior={anterior} />
+            </EntradaAnimada>
           )}
 
-          <Pressable
+          <BotonAnimado
             onPress={() => setMostrarFormulario((prev) => !prev)}
-            accessibilityRole="button"
-            style={({ pressed }) => [
-              styles.botonToggle,
-              pressed && styles.presionado,
-            ]}
+            haptic="light"
+            style={styles.botonToggle}
           >
             <Ionicons
-              name={mostrarFormulario ? 'chevron-up' : 'add-circle-outline'}
+              name={mostrarFormulario ? 'chevron-up' : 'add-circle'}
               size={22}
               color={TEMA.fondo}
             />
             <Text style={styles.textoToggle}>
               {mostrarFormulario ? 'Ocultar formulario' : 'Registrar nuevo mes'}
             </Text>
-          </Pressable>
+          </BotonAnimado>
 
           {mostrarFormulario && (
-            <FormularioMedida
-              mesesExistentes={ordenadas.map((item) => item.mes)}
-              onGuardar={manejarGuardar}
-            />
+            <EntradaAnimada indice={0}>
+              <FormularioMedida
+                mesesExistentes={ordenadas.map((item) => item.mes)}
+                onGuardar={manejarGuardar}
+              />
+            </EntradaAnimada>
           )}
 
           <View style={styles.seccionHistorial}>
@@ -83,8 +85,10 @@ export default function MedidasScreen() {
               Historial ({ordenadas.length}{' '}
               {ordenadas.length === 1 ? 'registro' : 'registros'})
             </Text>
-            {ordenadas.map((medida) => (
-              <TarjetaMedida key={medida.mes} medida={medida} />
+            {ordenadas.map((medida, indice) => (
+              <EntradaAnimada key={medida.mes} indice={indice + 1}>
+                <TarjetaMedida medida={medida} />
+              </EntradaAnimada>
             ))}
           </View>
         </ScrollView>
@@ -99,13 +103,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: TEMA.acento,
-    borderRadius: 14,
-    minHeight: 48,
-    paddingHorizontal: 16,
+    borderRadius: 999,
+    minHeight: 50,
+    paddingHorizontal: 20,
     gap: 8,
-  },
-  presionado: {
-    opacity: 0.85,
   },
   textoToggle: {
     color: TEMA.fondo,
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   },
   tituloSeccion: {
     color: TEMA.textoPrimario,
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '800',
   },
 });

@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { EntradaAnimada } from '@/components/EntradaAnimada';
 import { TarjetaDia } from '@/components/TarjetaDia';
 import { TEMA } from '@/constants/colores';
 import { estilosComunes } from '@/constants/estilos';
@@ -21,28 +22,36 @@ export default function InicioScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={estilosComunes.encabezado}>
-          <Text style={styles.marca}>GYMTRACK</Text>
+          <Text style={styles.marca}>GYMTRACK FITNESS</Text>
           <Text style={estilosComunes.tituloPantalla}>Plan semanal</Text>
           <Text style={estilosComunes.subtituloPantalla}>
-            {socio.nombre} · Objetivo: {socio.objetivo}
+            {socio.nombre} · {socio.objetivo}
           </Text>
         </View>
 
         {diaActual === null && (
-          <View style={styles.descansoCard}>
-            <Ionicons name="moon-outline" size={24} color={TEMA.acento} />
-            <View style={styles.descansoTextos}>
-              <Text style={styles.descansoTitulo}>Domingo: día de descanso</Text>
-              <Text style={styles.descansoSubtitulo}>
-                Recupera energía, hidrátate y prepárate para la rutina del lunes.
-              </Text>
+          <EntradaAnimada indice={0}>
+            <View style={styles.descansoCard}>
+              <View style={styles.iconoDescanso}>
+                <Ionicons name="moon" size={22} color={TEMA.acento} />
+              </View>
+              <View style={styles.descansoTextos}>
+                <Text style={styles.descansoTitulo}>Domingo: día de descanso</Text>
+                <Text style={styles.descansoSubtitulo}>
+                  Recupera energía, hidrátate y prepárate para la rutina del lunes.
+                </Text>
+              </View>
             </View>
-          </View>
+          </EntradaAnimada>
         )}
 
         <View style={esAncho ? styles.cuadricula : styles.lista}>
-          {PLAN_SEMANAL.map((plan) => (
-            <View key={plan.dia} style={esAncho ? styles.celdaAncha : undefined}>
+          {PLAN_SEMANAL.map((plan, indice) => (
+            <EntradaAnimada
+              key={plan.dia}
+              indice={indice}
+              style={esAncho ? styles.celdaAncha : undefined}
+            >
               <TarjetaDia
                 plan={plan}
                 esHoy={diaActual === plan.dia}
@@ -54,7 +63,7 @@ export default function InicioScreen() {
                   })
                 }
               />
-            </View>
+            </EntradaAnimada>
           ))}
         </View>
       </ScrollView>
@@ -67,17 +76,25 @@ const styles = StyleSheet.create({
     color: TEMA.acento,
     fontSize: 14,
     fontWeight: '800',
-    letterSpacing: 1.5,
+    letterSpacing: 1.4,
   },
   descansoCard: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.acento,
     padding: 16,
-    gap: 12,
+    gap: 14,
+  },
+  iconoDescanso: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: TEMA.acentoFondo,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   descansoTextos: {
     flex: 1,

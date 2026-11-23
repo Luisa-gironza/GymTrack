@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import { BotonAnimado } from '@/components/BotonAnimado';
 import { CampoFormulario } from '@/components/CampoFormulario';
 import { NOMBRES_PERIMETRO, PERIMETROS_ORDEN, TEMA } from '@/constants/colores';
 import type { ClavePerimetro, Medida } from '@/types/gym';
@@ -166,13 +167,13 @@ export function FormularioMedida({
         ))}
       </View>
 
-      <Pressable
+      <BotonAnimado
         onPress={registrar}
-        accessibilityRole="button"
-        style={({ pressed }) => [styles.boton, pressed && styles.presionado]}
+        haptic="success"
+        style={styles.boton}
       >
         <Text style={styles.botonTexto}>Guardar medida mensual</Text>
-      </Pressable>
+      </BotonAnimado>
     </View>
   );
 }
@@ -180,7 +181,7 @@ export function FormularioMedida({
 const styles = StyleSheet.create({
   tarjeta: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 18,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
     padding: 18,
@@ -215,14 +216,11 @@ const styles = StyleSheet.create({
   },
   boton: {
     backgroundColor: TEMA.acento,
-    borderRadius: 12,
-    minHeight: 48,
+    borderRadius: 999,
+    minHeight: 50,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 6,
-  },
-  presionado: {
-    opacity: 0.85,
   },
   botonTexto: {
     color: TEMA.fondo,

@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BarraProgreso } from '@/components/BarraProgreso';
 import { BloqueActividad } from '@/components/BloqueActividad';
+import { EntradaAnimada } from '@/components/EntradaAnimada';
 import { ItemEjercicio } from '@/components/ItemEjercicio';
 import { PantallaError } from '@/components/PantallaError';
 import { TemporizadorDescanso } from '@/components/TemporizadorDescanso';
@@ -68,10 +69,13 @@ export default function DetalleDiaScreen() {
         contentContainerStyle={estilosComunes.scrollContenido}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.cabecera, { borderLeftColor: plan.color }]}>
-          <Text style={[styles.diaEtiqueta, { color: plan.color }]}>
-            {NOMBRES_DIA[diaValido].toUpperCase()}
-          </Text>
+        <View style={styles.cabecera}>
+          <View style={[styles.badgeDia, { backgroundColor: `${plan.color}24`, borderColor: plan.color }]}>
+            <View style={[styles.puntoDia, { backgroundColor: plan.color }]} />
+            <Text style={[styles.diaEtiqueta, { color: plan.color }]}>
+              {NOMBRES_DIA[diaValido].toUpperCase()}
+            </Text>
+          </View>
           <Text style={styles.enfoque}>{plan.enfoque}</Text>
         </View>
 
@@ -91,8 +95,8 @@ export default function DetalleDiaScreen() {
           color={plan.color}
         />
 
-        {grupos.map((bloque) => (
-          <View key={bloque.grupo} style={styles.seccionGrupo}>
+        {grupos.map((bloque, indice) => (
+          <EntradaAnimada key={bloque.grupo} indice={indice} style={styles.seccionGrupo}>
             <Text style={styles.tituloGrupo}>{NOMBRES_GRUPO[bloque.grupo]}</Text>
             <View style={styles.listaEjercicios}>
               {bloque.ejercicios.map((ejercicio) => (
@@ -112,7 +116,7 @@ export default function DetalleDiaScreen() {
                 />
               ))}
             </View>
-          </View>
+          </EntradaAnimada>
         ))}
 
         {plan.cardioMin !== undefined && (
@@ -140,29 +144,44 @@ export default function DetalleDiaScreen() {
 const styles = StyleSheet.create({
   cabecera: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 20,
+    padding: 18,
     borderWidth: 1,
     borderColor: TEMA.borde,
-    borderLeftWidth: 6,
-    gap: 4,
+    gap: 10,
+  },
+  badgeDia: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    gap: 6,
+  },
+  puntoDia: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
   diaEtiqueta: {
     fontSize: 14,
     fontWeight: '800',
-    letterSpacing: 1.2,
+    letterSpacing: 1,
   },
   enfoque: {
     color: TEMA.textoPrimario,
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '800',
+    letterSpacing: -0.4,
   },
   seccionGrupo: {
     gap: 10,
   },
   tituloGrupo: {
     color: TEMA.textoPrimario,
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '800',
   },
   listaEjercicios: {

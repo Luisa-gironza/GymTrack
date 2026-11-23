@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Platform, StyleSheet, Text, View } from 'react-native';
+import { BotonAnimado } from '@/components/BotonAnimado';
 import { TEMA } from '@/constants/colores';
 
 const SEGUNDOS_INICIALES = 60;
@@ -16,10 +18,12 @@ function formatearTiempo(segundos: number): string {
 }
 
 export function TemporizadorDescanso({
-  colorAcento = TEMA.acento,
+  colorAcento,
 }: TemporizadorDescansoProps) {
   const [segundos, setSegundos] = useState(SEGUNDOS_INICIALES);
   const [activo, setActivo] = useState(false);
+  const [progresoAnim] = useState(() => new Animated.Value(100));
+  const [pulsoReloj] = useState(() => new Animated.Value(1));
 
   useEffect(() => {
     if (!activo) {
@@ -30,6 +34,11 @@ export function TemporizadorDescanso({
       setSegundos((prev) => {
         if (prev <= 1) {
           setActivo(false);
+          if (Platform.OS !== 'web') {
+            void Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Success
+            ).catch(() => {});
+          }
           return 0;
         }
         return prev - 1;
@@ -40,6 +49,40 @@ export function TemporizadorDescanso({
       clearInterval(intervalo);
     };
   }, [activo]);
+
+  useEffect(() => {
+    const porcentaje = (segundos / SEGUNDOS_INICIALES) * 100;
+    const animacion = Animated.timing(progresoAnim, {
+      toValue: porcentaje,
+      duration: 280,
+      easing: Easing.out(Easing.quad),
+      useNativeDriver: false,
+    });
+    animacion.start();
+    return () => {
+      animacion.stop();
+    };
+  }, [segundos, progresoAnim]);
+
+  useEffect(() => {
+    if (!activo && segundos > 0) return;
+    const animacion = Animated.sequence([
+      Animated.timing(pulsoReloj, {
+        toValue: 1.06,
+        duration: 140,
+        useNativeDriver: true,
+      }),
+      Animated.timing(pulsoReloj, {
+        toValue: 1,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+    ]);
+    animacion.start();
+    return () => {
+      animacion.stop();
+    };
+  }, [segundos, activo, pulsoReloj]);
 
   const alternar = () => {
     if (segundos === 0) {
@@ -55,31 +98,41 @@ export function TemporizadorDescanso({
     setSegundos(SEGUNDOS_INICIALES);
   };
 
-  const progreso = Math.round((segundos / SEGUNDOS_INICIALES) * 100);
   const finalizado = segundos === 0;
+  const anchoBarra = progresoAnim.interpolate({
+    inputRange: [0, 100],
+    outputRange: ['0%', '100%'],
+  });
 
   return (
-    <View style={styles.tarjeta}>
+    <View style={[styles.tarjeta, finalizado && styles.tarjetaFinalizada]}>
       <View style={styles.encabezado}>
         <View style={styles.tituloFila}>
-          <Ionicons name="timer-outline" size={20} color={colorAcento} />
-          <Text style={styles.titulo}>Temporizador de descanso</Text>
+          <View style={styles.iconoFondo}>
+            <Ionicons name="timer" size={20} color={TEMA.acento} />
+          </View>
+          <View style={styles.tituloTextos}>
+            <Text style={styles.titulo}>Descanso entre series</Text>
+            <Text style={styles.estadoTexto}>
+              {activo ? 'En curso' : finalizado ? '¡Tiempo cumplido!' : '60 segundos'}
+            </Text>
+          </View>
         </View>
-        <Text style={[styles.reloj, { color: finalizado ? TEMA.exito : colorAcento }]}>
-          {formatearTiempo(segundos)}
-        </Text>
+
+        <View style={styles.relojBloque}>
+          {colorAcento !== undefined && (
+            <View style={[styles.puntoAcento, { backgroundColor: colorAcento }]} />
+          )}
+          <Animated.Text
+            style={[styles.reloj, { transform: [{ scale: pulsoReloj }] }]}
+          >
+            {formatearTiempo(segundos)}
+          </Animated.Text>
+        </View>
       </View>
 
       <View style={styles.pista}>
-        <View
-          style={[
-            styles.relleno,
-            {
-              width: `${progreso}%`,
-              backgroundColor: finalizado ? TEMA.exito : colorAcento,
-            },
-          ]}
-        />
+        <Animated.View style={[styles.relleno, { width: anchoBarra }]} />
       </View>
 
       {finalizado && (
@@ -89,14 +142,11 @@ export function TemporizadorDescanso({
       )}
 
       <View style={styles.acciones}>
-        <Pressable
+        <BotonAnimado
           onPress={alternar}
-          accessibilityRole="button"
-          style={({ pressed }) => [
-            styles.botonPrimario,
-            { backgroundColor: colorAcento },
-            pressed && styles.presionado,
-          ]}
+          haptic="medium"
+          contenedorStyle={styles.flex}
+          style={styles.botonPrimario}
         >
           <Ionicons
             name={activo ? 'pause' : 'play'}
@@ -106,40 +156,57 @@ export function TemporizadorDescanso({
           <Text style={styles.textoPrimario}>
             {activo ? 'Pausar' : finalizado ? 'Repetir 60 s' : 'Iniciar 60 s'}
           </Text>
-        </Pressable>
+        </BotonAnimado>
 
-        <Pressable
+        <BotonAnimado
           onPress={reiniciar}
-          accessibilityRole="button"
-          style={({ pressed }) => [styles.botonSecundario, pressed && styles.presionado]}
+          haptic="light"
+          style={styles.botonSecundario}
         >
           <Ionicons name="refresh" size={18} color={TEMA.textoPrimario} />
           <Text style={styles.textoSecundario}>Reiniciar</Text>
-        </Pressable>
+        </BotonAnimado>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   tarjeta: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
-    padding: 16,
-    gap: 12,
+    padding: 18,
+    gap: 14,
+  },
+  tarjetaFinalizada: {
+    borderColor: TEMA.acento,
   },
   encabezado: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: 10,
   },
   tituloFila: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
+    flex: 1,
+  },
+  iconoFondo: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: TEMA.acentoFondo,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tituloTextos: {
     flex: 1,
   },
   titulo: {
@@ -147,23 +214,40 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
   },
+  estadoTexto: {
+    color: TEMA.textoSecundario,
+    fontSize: 14,
+  },
+  relojBloque: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  puntoAcento: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
   reloj: {
-    fontSize: 24,
+    color: TEMA.acento,
+    fontSize: 28,
     fontWeight: '800',
     fontVariant: ['tabular-nums'],
+    letterSpacing: -0.5,
   },
   pista: {
     height: 8,
     borderRadius: 999,
-    backgroundColor: TEMA.fondo,
+    backgroundColor: TEMA.tarjetaElevada,
     overflow: 'hidden',
   },
   relleno: {
     height: '100%',
     borderRadius: 999,
+    backgroundColor: TEMA.acento,
   },
   mensajeListo: {
-    color: TEMA.exito,
+    color: TEMA.acento,
     fontSize: 14,
     fontWeight: '700',
   },
@@ -172,28 +256,24 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   botonPrimario: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 46,
-    borderRadius: 12,
+    minHeight: 48,
+    borderRadius: 999,
+    backgroundColor: TEMA.acento,
+    paddingHorizontal: 18,
     gap: 8,
   },
   botonSecundario: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 46,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: TEMA.borde,
-    backgroundColor: TEMA.fondo,
+    minHeight: 48,
+    paddingHorizontal: 18,
+    borderRadius: 999,
+    backgroundColor: TEMA.tarjetaElevada,
     gap: 6,
-  },
-  presionado: {
-    opacity: 0.8,
   },
   textoPrimario: {
     color: TEMA.fondo,

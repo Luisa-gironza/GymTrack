@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { BotonAnimado } from '@/components/BotonAnimado';
 import { NOMBRES_DIA, NOMBRES_GRUPO, TEMA } from '@/constants/colores';
 import type { DiaPlan, DiaSemana, Ejercicio } from '@/types/gym';
 
@@ -25,7 +26,9 @@ export function DetalleEjercicioCard({
           />
         ) : (
           <View style={styles.placeholder}>
-            <Ionicons name="barbell-outline" size={56} color={TEMA.acento} />
+            <View style={styles.circuloIcono}>
+              <Ionicons name="barbell" size={44} color={TEMA.acento} />
+            </View>
             <Text style={styles.codigo}>{ejercicio.id.toUpperCase()}</Text>
             <Text style={styles.placeholderTexto}>
               Ilustración de {NOMBRES_GRUPO[ejercicio.grupo]}
@@ -49,10 +52,10 @@ export function DetalleEjercicioCard({
           </View>
           <View style={styles.metrica}>
             <Text style={styles.metricaValor}>{ejercicio.repeticiones}</Text>
-            <Text style={styles.metricaEtiqueta}>Repeticiones</Text>
+            <Text style={styles.metricaEtiqueta}>Reps</Text>
           </View>
           <View style={styles.metrica}>
-            <Text style={styles.metricaValor}>
+            <Text style={[styles.metricaValor, styles.valorAcento]}>
               {ejercicio.series} × {ejercicio.repeticiones}
             </Text>
             <Text style={styles.metricaEtiqueta}>Esquema</Text>
@@ -69,22 +72,18 @@ export function DetalleEjercicioCard({
         ) : (
           <View style={styles.chipsDias}>
             {diasAsignados.map((plan) => (
-              <Pressable
+              <BotonAnimado
                 key={plan.dia}
                 onPress={() => onAbrirDia(plan.dia)}
-                accessibilityRole="button"
-                style={({ pressed }) => [
-                  styles.chipDia,
-                  { borderColor: plan.color },
-                  pressed && styles.presionado,
-                ]}
+                haptic="light"
+                style={[styles.chipDia, { borderColor: plan.color }]}
               >
                 <View style={[styles.punto, { backgroundColor: plan.color }]} />
                 <Text style={styles.chipDiaTexto}>
                   {NOMBRES_DIA[plan.dia]} · {plan.enfoque}
                 </Text>
                 <Ionicons name="chevron-forward" size={18} color={TEMA.textoSecundario} />
-              </Pressable>
+              </BotonAnimado>
             ))}
           </View>
         )}
@@ -99,10 +98,10 @@ const styles = StyleSheet.create({
   },
   mediaCard: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 18,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
-    height: 196,
+    height: 200,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
@@ -114,6 +113,14 @@ const styles = StyleSheet.create({
   placeholder: {
     alignItems: 'center',
     gap: 8,
+  },
+  circuloIcono: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    backgroundColor: TEMA.acentoFondo,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   codigo: {
     color: TEMA.acento,
@@ -127,7 +134,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 18,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
     padding: 18,
@@ -135,7 +142,7 @@ const styles = StyleSheet.create({
   },
   badgeGrupo: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(34, 195, 230, 0.16)',
+    backgroundColor: TEMA.acentoFondo,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 5,
@@ -147,8 +154,9 @@ const styles = StyleSheet.create({
   },
   nombre: {
     color: TEMA.textoPrimario,
-    fontSize: 22,
+    fontSize: 23,
     fontWeight: '800',
+    letterSpacing: -0.4,
   },
   metricasFila: {
     flexDirection: 'row',
@@ -158,7 +166,9 @@ const styles = StyleSheet.create({
   metrica: {
     flex: 1,
     backgroundColor: TEMA.fondo,
-    borderRadius: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: TEMA.borde,
     padding: 12,
     alignItems: 'center',
     gap: 4,
@@ -167,6 +177,9 @@ const styles = StyleSheet.create({
     color: TEMA.textoPrimario,
     fontSize: 18,
     fontWeight: '800',
+  },
+  valorAcento: {
+    color: TEMA.acento,
   },
   metricaEtiqueta: {
     color: TEMA.textoSecundario,
@@ -189,20 +202,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: TEMA.fondo,
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1.5,
     paddingVertical: 12,
     paddingHorizontal: 14,
-    minHeight: 46,
+    minHeight: 48,
     gap: 10,
-  },
-  presionado: {
-    opacity: 0.8,
   },
   punto: {
     width: 10,
     height: 10,
-    borderRadius: 999,
+    borderRadius: 5,
   },
   chipDiaTexto: {
     color: TEMA.textoPrimario,

@@ -12,8 +12,12 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerStyle: { backgroundColor: TEMA.fondo },
-            headerTintColor: TEMA.textoPrimario,
-            headerTitleStyle: { fontWeight: '700' },
+            headerTintColor: TEMA.acento,
+            headerTitleStyle: {
+              color: TEMA.textoPrimario,
+              fontWeight: '700',
+              fontSize: 17,
+            },
             headerShadowVisible: false,
             contentStyle: { backgroundColor: TEMA.fondo },
             headerBackTitle: 'Atrás',

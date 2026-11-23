@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
+import { BotonAnimado } from '@/components/BotonAnimado';
 import { TEMA } from '@/constants/colores';
 
 interface PantallaErrorProps {
@@ -12,12 +13,18 @@ export function PantallaError({ titulo, mensaje }: PantallaErrorProps) {
   return (
     <View style={styles.contenedor}>
       <View style={styles.tarjeta}>
-        <Ionicons name="alert-circle-outline" size={48} color={TEMA.peligro} />
+        <View style={styles.iconoFondo}>
+          <Ionicons name="alert-circle" size={40} color={TEMA.peligro} />
+        </View>
         <Text style={styles.titulo}>{titulo}</Text>
         <Text style={styles.mensaje}>{mensaje}</Text>
-        <Link href="/" style={styles.boton}>
-          Volver al Inicio
-        </Link>
+        <BotonAnimado
+          onPress={() => router.replace('/')}
+          haptic="light"
+          style={styles.boton}
+        >
+          <Text style={styles.botonTexto}>Volver al Inicio</Text>
+        </BotonAnimado>
       </View>
     </View>
   );
@@ -42,6 +49,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
+  iconoFondo: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: TEMA.peligroFondo,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   titulo: {
     color: TEMA.textoPrimario,
     fontSize: 20,
@@ -57,14 +72,16 @@ const styles = StyleSheet.create({
   boton: {
     marginTop: 8,
     backgroundColor: TEMA.acento,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 999,
+    minHeight: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  botonTexto: {
     color: TEMA.fondo,
     fontSize: 15,
     fontWeight: '800',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    overflow: 'hidden',
-    minHeight: 44,
-    textAlign: 'center',
   },
 });

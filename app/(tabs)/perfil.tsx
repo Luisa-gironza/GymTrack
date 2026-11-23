@@ -1,5 +1,6 @@
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { EntradaAnimada } from '@/components/EntradaAnimada';
 import { FormularioPerfil } from '@/components/FormularioPerfil';
 import { estilosComunes } from '@/constants/estilos';
 import { useGym } from '@/context/GymContext';
@@ -19,17 +20,19 @@ export default function PerfilScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={estilosComunes.encabezado}>
-            <Text style={estilosComunes.tituloPantalla}>Perfil del socio</Text>
+            <Text style={estilosComunes.tituloPantalla}>Perfil</Text>
             <Text style={estilosComunes.subtituloPantalla}>
               Ficha asignada: {socio.fechaAsignacion}
             </Text>
           </View>
 
-          <FormularioPerfil
-            key={`${socio.nombre}-${socio.edad}-${socio.objetivo}-${socio.lesiones.join(',')}`}
-            socioInicial={socio}
-            onGuardar={setSocio}
-          />
+          <EntradaAnimada indice={0}>
+            <FormularioPerfil
+              key={`${socio.nombre}-${socio.edad}-${socio.objetivo}-${socio.lesiones.join(',')}`}
+              socioInicial={socio}
+              onGuardar={setSocio}
+            />
+          </EntradaAnimada>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

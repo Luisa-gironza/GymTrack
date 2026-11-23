@@ -40,10 +40,10 @@ export function TarjetaMedida({ medida }: TarjetaMedidaProps) {
 const styles = StyleSheet.create({
   tarjeta: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
-    padding: 16,
+    padding: 18,
     gap: 10,
   },
   encabezado: {
@@ -76,9 +76,11 @@ const styles = StyleSheet.create({
   celda: {
     width: '48%',
     backgroundColor: TEMA.fondo,
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: TEMA.borde,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

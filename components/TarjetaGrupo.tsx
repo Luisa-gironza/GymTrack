@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { BotonAnimado } from '@/components/BotonAnimado';
 import { NOMBRES_GRUPO, TEMA } from '@/constants/colores';
 import type { GrupoMuscular } from '@/types/gym';
 
@@ -34,15 +35,11 @@ export function TarjetaGrupo({
 }: TarjetaGrupoProps) {
   return (
     <View style={[styles.envoltura, { width: anchoPorcentaje }]}>
-      <Pressable
+      <BotonAnimado
         onPress={onPress}
-        accessibilityRole="button"
+        haptic="light"
         accessibilityLabel={`Abrir ejercicios de ${NOMBRES_GRUPO[grupo]}`}
-        style={({ pressed }) => [
-          styles.tarjeta,
-          tieneLesion && styles.tarjetaLesion,
-          pressed && styles.presionada,
-        ]}
+        style={[styles.tarjeta, tieneLesion && styles.tarjetaLesion]}
       >
         <View style={styles.filaIconos}>
           <View style={styles.iconoFondo}>
@@ -52,11 +49,13 @@ export function TarjetaGrupo({
             <Ionicons name="warning" size={18} color={TEMA.advertencia} />
           )}
         </View>
-        <Text style={styles.nombre}>{NOMBRES_GRUPO[grupo]}</Text>
-        <Text style={styles.contador}>
-          {cantidad} {cantidad === 1 ? 'ejercicio' : 'ejercicios'}
-        </Text>
-      </Pressable>
+        <View style={styles.textos}>
+          <Text style={styles.nombre}>{NOMBRES_GRUPO[grupo]}</Text>
+          <Text style={styles.contador}>
+            {cantidad} {cantidad === 1 ? 'ejercicio' : 'ejercicios'}
+          </Text>
+        </View>
+      </BotonAnimado>
     </View>
   );
 }
@@ -67,19 +66,16 @@ const styles = StyleSheet.create({
   },
   tarjeta: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
     padding: 16,
-    minHeight: 112,
+    minHeight: 122,
     justifyContent: 'space-between',
-    gap: 8,
+    gap: 12,
   },
   tarjetaLesion: {
     borderColor: TEMA.advertencia,
-  },
-  presionada: {
-    opacity: 0.8,
   },
   filaIconos: {
     flexDirection: 'row',
@@ -87,17 +83,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   iconoFondo: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: 'rgba(34, 195, 230, 0.14)',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: TEMA.acentoFondo,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  textos: {
+    gap: 2,
+  },
   nombre: {
     color: TEMA.textoPrimario,
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '800',
+    letterSpacing: -0.2,
   },
   contador: {
     color: TEMA.textoSecundario,

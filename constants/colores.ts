@@ -10,21 +10,22 @@ export const COLORES_DIA: Record<DiaSemana, string> = {
 };
 
 export const TEMA = {
-  fondo: '#0F172A',
-  tarjeta: '#1E293B',
-  tarjetaElevada: '#263348',
-  borde: '#334155',
-  textoPrimario: '#F8FAFC',
-  textoSecundario: '#94A3B8',
-  textoApagado: '#64748B',
-  acento: '#22C3E6',
-  exito: '#22C55E',
-  exitoFondo: 'rgba(34, 197, 94, 0.16)',
-  advertencia: '#F59E0B',
-  advertenciaFondo: 'rgba(245, 158, 11, 0.16)',
-  peligro: '#EF4444',
-  peligroFondo: 'rgba(239, 68, 68, 0.16)',
-  tabBar: '#0B1120',
+  fondo: '#000000',
+  tarjeta: '#1C1C1E',
+  tarjetaElevada: '#2C2C2E',
+  borde: '#2C2C2E',
+  textoPrimario: '#FFFFFF',
+  textoSecundario: '#8E8E93',
+  textoApagado: '#636366',
+  acento: '#32D74B',
+  acentoFondo: 'rgba(50, 215, 75, 0.16)',
+  exito: '#32D74B',
+  exitoFondo: 'rgba(50, 215, 75, 0.16)',
+  advertencia: '#FF9F0A',
+  advertenciaFondo: 'rgba(255, 159, 10, 0.16)',
+  peligro: '#FF453A',
+  peligroFondo: 'rgba(255, 69, 58, 0.16)',
+  tabBar: '#0A0A0C',
 } as const;
 
 export const NOMBRES_DIA: Record<DiaSemana, string> = {

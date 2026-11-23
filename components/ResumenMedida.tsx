@@ -31,7 +31,7 @@ export function ResumenMedida({ actual, anterior }: ResumenMedidaProps) {
     diferenciaPeso === null
       ? TEMA.textoSecundario
       : diferenciaPeso < 0
-        ? TEMA.exito
+        ? TEMA.acento
         : diferenciaPeso > 0
           ? TEMA.advertencia
           : TEMA.textoPrimario;
@@ -47,7 +47,9 @@ export function ResumenMedida({ actual, anterior }: ResumenMedidaProps) {
 
       <View style={styles.filaMetricas}>
         <View style={styles.cajaMetrica}>
-          <Text style={styles.valor}>{formatearDecimal(imc)}</Text>
+          <Text style={[styles.valor, styles.valorAcento]}>
+            {formatearDecimal(imc)}
+          </Text>
           <Text style={styles.subEtiqueta}>IMC (OMS)</Text>
         </View>
 
@@ -65,7 +67,7 @@ export function ResumenMedida({ actual, anterior }: ResumenMedidaProps) {
       </View>
 
       <View style={styles.estaturaFila}>
-        <Ionicons name="resize-outline" size={16} color={TEMA.textoSecundario} />
+        <Ionicons name="resize-outline" size={16} color={TEMA.acento} />
         <Text style={styles.estaturaTexto}>
           Estatura registrada: {actual.estaturaM.toFixed(2).replace('.', ',')} m
         </Text>
@@ -77,7 +79,7 @@ export function ResumenMedida({ actual, anterior }: ResumenMedidaProps) {
 const styles = StyleSheet.create({
   tarjeta: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 18,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.acento,
     padding: 18,
@@ -96,7 +98,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   badgeImc: {
-    backgroundColor: 'rgba(34, 195, 230, 0.16)',
+    backgroundColor: TEMA.acentoFondo,
     borderRadius: 999,
     paddingHorizontal: 12,
     paddingVertical: 5,
@@ -113,7 +115,9 @@ const styles = StyleSheet.create({
   cajaMetrica: {
     flex: 1,
     backgroundColor: TEMA.fondo,
-    borderRadius: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: TEMA.borde,
     padding: 12,
     alignItems: 'center',
     gap: 4,
@@ -123,6 +127,10 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '800',
     textAlign: 'center',
+    fontVariant: ['tabular-nums'],
+  },
+  valorAcento: {
+    color: TEMA.acento,
   },
   subEtiqueta: {
     color: TEMA.textoSecundario,

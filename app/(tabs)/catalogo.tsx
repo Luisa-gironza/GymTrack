@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,6 +10,8 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BotonAnimado } from '@/components/BotonAnimado';
+import { EntradaAnimada } from '@/components/EntradaAnimada';
 import { ItemEjercicio } from '@/components/ItemEjercicio';
 import { TarjetaGrupo } from '@/components/TarjetaGrupo';
 import { GRUPOS_ORDEN, TEMA } from '@/constants/colores';
@@ -45,7 +46,7 @@ export default function CatalogoScreen() {
         </View>
 
         <View style={styles.barraBusqueda}>
-          <Ionicons name="search" size={20} color={TEMA.textoSecundario} />
+          <Ionicons name="search" size={20} color={TEMA.acento} />
           <TextInput
             value={busqueda}
             onChangeText={setBusqueda}
@@ -56,14 +57,14 @@ export default function CatalogoScreen() {
             returnKeyType="search"
           />
           {busqueda.length > 0 && (
-            <Pressable
+            <BotonAnimado
               onPress={() => setBusqueda('')}
-              accessibilityRole="button"
+              haptic="light"
               accessibilityLabel="Limpiar búsqueda"
               style={styles.botonLimpiar}
             >
               <Ionicons name="close-circle" size={22} color={TEMA.textoSecundario} />
-            </Pressable>
+            </BotonAnimado>
           )}
         </View>
 
@@ -81,42 +82,45 @@ export default function CatalogoScreen() {
                 </Text>
               </View>
             ) : (
-              resultados.map((ejercicio) => (
-                <ItemEjercicio
-                  key={ejercicio.id}
-                  ejercicio={ejercicio}
-                  advertenciaLesion={socio.lesiones.includes(ejercicio.grupo)}
-                  onAbrirDetalle={() =>
-                    router.push({
-                      pathname: '/ejercicio/[id]',
-                      params: { id: ejercicio.id },
-                    })
-                  }
-                />
+              resultados.map((ejercicio, indice) => (
+                <EntradaAnimada key={ejercicio.id} indice={indice}>
+                  <ItemEjercicio
+                    ejercicio={ejercicio}
+                    advertenciaLesion={socio.lesiones.includes(ejercicio.grupo)}
+                    onAbrirDetalle={() =>
+                      router.push({
+                        pathname: '/ejercicio/[id]',
+                        params: { id: ejercicio.id },
+                      })
+                    }
+                  />
+                </EntradaAnimada>
               ))
             )}
           </View>
         ) : (
-          <View style={styles.cuadricula}>
-            {GRUPOS_ORDEN.map((grupo) => {
-              const cantidad = EJERCICIOS.filter((e) => e.grupo === grupo).length;
-              return (
-                <TarjetaGrupo
-                  key={grupo}
-                  grupo={grupo}
-                  cantidad={cantidad}
-                  anchoPorcentaje={anchoColumna}
-                  tieneLesion={socio.lesiones.includes(grupo)}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/grupo/[grupo]',
-                      params: { grupo },
-                    })
-                  }
-                />
-              );
-            })}
-          </View>
+          <EntradaAnimada indice={0}>
+            <View style={styles.cuadricula}>
+              {GRUPOS_ORDEN.map((grupo) => {
+                const cantidad = EJERCICIOS.filter((e) => e.grupo === grupo).length;
+                return (
+                  <TarjetaGrupo
+                    key={grupo}
+                    grupo={grupo}
+                    cantidad={cantidad}
+                    anchoPorcentaje={anchoColumna}
+                    tieneLesion={socio.lesiones.includes(grupo)}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/grupo/[grupo]',
+                        params: { grupo },
+                      })
+                    }
+                  />
+                );
+              })}
+            </View>
+          </EntradaAnimada>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -128,12 +132,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 14,
+    borderRadius: 999,
     borderWidth: 1,
     borderColor: TEMA.borde,
-    paddingLeft: 14,
+    paddingLeft: 16,
     paddingRight: 6,
-    minHeight: 48,
+    minHeight: 50,
     gap: 10,
   },
   input: {
@@ -163,7 +167,7 @@ const styles = StyleSheet.create({
   },
   vacio: {
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
     padding: 24,

@@ -37,7 +37,7 @@ export function AlertaLesion({ grupo, observaciones = [] }: AlertaLesionProps) {
 const styles = StyleSheet.create({
   contenedor: {
     backgroundColor: TEMA.advertenciaFondo,
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1.5,
     borderColor: TEMA.advertencia,
     padding: 16,

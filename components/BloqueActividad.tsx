@@ -18,15 +18,15 @@ export function BloqueActividad({
   color,
 }: BloqueActividadProps) {
   return (
-    <View style={[styles.tarjeta, { borderLeftColor: color }]}>
-      <View style={[styles.iconoCaja, { backgroundColor: `${color}22` }]}>
+    <View style={styles.tarjeta}>
+      <View style={[styles.iconoCaja, { backgroundColor: `${color}24` }]}>
         <Ionicons name={icono} size={22} color={color} />
       </View>
       <View style={styles.textos}>
         <Text style={styles.titulo}>{titulo}</Text>
         <Text style={styles.descripcion}>{descripcion}</Text>
       </View>
-      <View style={[styles.badge, { borderColor: color }]}>
+      <View style={[styles.badge, { borderColor: color, backgroundColor: `${color}1A` }]}>
         <Text style={[styles.duracion, { color }]}>{duracionMin} min</Text>
       </View>
     </View>
@@ -38,17 +38,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: TEMA.tarjeta,
-    borderRadius: 14,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: TEMA.borde,
-    borderLeftWidth: 4,
-    padding: 14,
+    padding: 16,
     gap: 12,
   },
   iconoCaja: {
     width: 44,
     height: 44,
-    borderRadius: 12,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
   badge: {
     borderWidth: 1,
     borderRadius: 999,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     paddingVertical: 5,
   },
   duracion: {

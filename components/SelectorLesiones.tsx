@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { BotonAnimado } from '@/components/BotonAnimado';
 import { GRUPOS_ORDEN, NOMBRES_GRUPO, TEMA } from '@/constants/colores';
 import type { GrupoMuscular } from '@/types/gym';
 
@@ -21,9 +22,10 @@ export function SelectorLesiones({
         {GRUPOS_ORDEN.map((grupo) => {
           const activo = seleccionadas.includes(grupo);
           return (
-            <Pressable
+            <BotonAnimado
               key={grupo}
               onPress={() => onAlternar(grupo)}
+              haptic="light"
               accessibilityRole="checkbox"
               accessibilityState={{ checked: activo }}
               style={[styles.chip, activo && styles.chipActivo]}
@@ -31,7 +33,7 @@ export function SelectorLesiones({
               <Text style={[styles.chipTexto, activo && styles.chipTextoActivo]}>
                 {NOMBRES_GRUPO[grupo]}
               </Text>
-            </Pressable>
+            </BotonAnimado>
           );
         })}
       </View>

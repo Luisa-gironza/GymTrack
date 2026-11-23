@@ -2,6 +2,7 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AlertaLesion } from '@/components/AlertaLesion';
+import { EntradaAnimada } from '@/components/EntradaAnimada';
 import { ItemEjercicio } from '@/components/ItemEjercicio';
 import { PantallaError } from '@/components/PantallaError';
 import { NOMBRES_GRUPO } from '@/constants/colores';
@@ -50,18 +51,19 @@ export default function GrupoScreen() {
         )}
 
         <View style={styles.lista}>
-          {ejerciciosGrupo.map((ejercicio) => (
-            <ItemEjercicio
-              key={ejercicio.id}
-              ejercicio={ejercicio}
-              advertenciaLesion={tieneLesion}
-              onAbrirDetalle={() =>
-                router.push({
-                  pathname: '/ejercicio/[id]',
-                  params: { id: ejercicio.id },
-                })
-              }
-            />
+          {ejerciciosGrupo.map((ejercicio, indice) => (
+            <EntradaAnimada key={ejercicio.id} indice={indice}>
+              <ItemEjercicio
+                ejercicio={ejercicio}
+                advertenciaLesion={tieneLesion}
+                onAbrirDetalle={() =>
+                  router.push({
+                    pathname: '/ejercicio/[id]',
+                    params: { id: ejercicio.id },
+                  })
+                }
+              />
+            </EntradaAnimada>
           ))}
         </View>
       </ScrollView>
