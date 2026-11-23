@@ -1,17 +1,109 @@
-import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { TEMA } from '@/constants/colores';
+import { ItemEjercicio } from '@/components/ItemEjercicio';
+import { TarjetaGrupo } from '@/components/TarjetaGrupo';
+import { GRUPOS_ORDEN, TEMA } from '@/constants/colores';
+import { EJERCICIOS } from '@/data/ejercicios';
+import { normalizar } from '@/utils/texto';
 
 export default function CatalogoScreen() {
+  const [busqueda, setBusqueda] = useState('');
+  const consulta = normalizar(busqueda.trim());
+
+  const resultados = consulta
+    ? EJERCICIOS.filter((ej) => normalizar(ej.nombre).includes(consulta))
+    : [];
+
   return (
     <SafeAreaView style={styles.contenedor} edges={['top']}>
-      <View style={styles.cuerpo}>
-        <Text style={styles.titulo}>Catálogo de ejercicios</Text>
-        <Link href="/grupo/pecho" style={styles.enlace}>
-          Ver grupo Pecho
-        </Link>
-      </View>
+      <ScrollView
+        contentContainerStyle={styles.contenido}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.encabezado}>
+          <Text style={styles.titulo}>Catálogo</Text>
+          <Text style={styles.subtitulo}>
+            11 grupos musculares · {EJERCICIOS.length} ejercicios
+          </Text>
+        </View>
+
+        <View style={styles.barraBusqueda}>
+          <Ionicons name="search" size={20} color={TEMA.textoSecundario} />
+          <TextInput
+            value={busqueda}
+            onChangeText={setBusqueda}
+            placeholder="Buscar ejercicio (ej. extension, curl...)"
+            placeholderTextColor={TEMA.textoApagado}
+            style={styles.input}
+            autoCorrect={false}
+            returnKeyType="search"
+          />
+          {busqueda.length > 0 && (
+            <Pressable
+              onPress={() => setBusqueda('')}
+              accessibilityRole="button"
+              accessibilityLabel="Limpiar búsqueda"
+              style={styles.botonLimpiar}
+            >
+              <Ionicons name="close-circle" size={22} color={TEMA.textoSecundario} />
+            </Pressable>
+          )}
+        </View>
+
+        {consulta.length > 0 ? (
+          <View style={styles.listaResultados}>
+            <Text style={styles.contadorResultados}>
+              {resultados.length}{' '}
+              {resultados.length === 1 ? 'resultado encontrado' : 'resultados encontrados'}
+            </Text>
+            {resultados.length === 0 ? (
+              <View style={styles.vacio}>
+                <Ionicons name="search-outline" size={32} color={TEMA.textoSecundario} />
+                <Text style={styles.vacioTexto}>
+                  No se encontraron ejercicios que coincidan con “{busqueda.trim()}”.
+                </Text>
+              </View>
+            ) : (
+              resultados.map((ejercicio) => (
+                <ItemEjercicio
+                  key={ejercicio.id}
+                  ejercicio={ejercicio}
+                  onAbrirDetalle={() =>
+                    router.push({
+                      pathname: '/ejercicio/[id]',
+                      params: { id: ejercicio.id },
+                    })
+                  }
+                />
+              ))
+            )}
+          </View>
+        ) : (
+          <View style={styles.cuadricula}>
+            {GRUPOS_ORDEN.map((grupo) => {
+              const cantidad = EJERCICIOS.filter((e) => e.grupo === grupo).length;
+              return (
+                <TarjetaGrupo
+                  key={grupo}
+                  grupo={grupo}
+                  cantidad={cantidad}
+                  anchoPorcentaje="50%"
+                  onPress={() =>
+                    router.push({
+                      pathname: '/grupo/[grupo]',
+                      params: { grupo },
+                    })
+                  }
+                />
+              );
+            })}
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -21,17 +113,72 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: TEMA.fondo,
   },
-  cuerpo: {
+  contenido: {
     padding: 20,
-    gap: 12,
+    paddingBottom: 32,
+    gap: 16,
+  },
+  encabezado: {
+    gap: 4,
   },
   titulo: {
     color: TEMA.textoPrimario,
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 28,
+    fontWeight: '800',
   },
-  enlace: {
-    color: TEMA.acento,
-    fontSize: 16,
+  subtitulo: {
+    color: TEMA.textoSecundario,
+    fontSize: 15,
+  },
+  barraBusqueda: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: TEMA.tarjeta,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: TEMA.borde,
+    paddingLeft: 14,
+    paddingRight: 6,
+    minHeight: 48,
+    gap: 10,
+  },
+  input: {
+    flex: 1,
+    color: TEMA.textoPrimario,
+    fontSize: 15,
+    paddingVertical: 10,
+  },
+  botonLimpiar: {
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cuadricula: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: -6,
+  },
+  listaResultados: {
+    gap: 10,
+  },
+  contadorResultados: {
+    color: TEMA.textoSecundario,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  vacio: {
+    backgroundColor: TEMA.tarjeta,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: TEMA.borde,
+    padding: 24,
+    alignItems: 'center',
+    gap: 10,
+  },
+  vacioTexto: {
+    color: TEMA.textoSecundario,
+    fontSize: 15,
+    textAlign: 'center',
   },
 });
