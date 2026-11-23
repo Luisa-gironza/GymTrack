@@ -1,26 +1,29 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TarjetaDia } from '@/components/TarjetaDia';
 import { TEMA } from '@/constants/colores';
+import { estilosComunes } from '@/constants/estilos';
 import { useGym } from '@/context/GymContext';
 import { obtenerDiaActual, PLAN_SEMANAL } from '@/data/plan';
 
 export default function InicioScreen() {
   const { socio, completados } = useGym();
+  const { width } = useWindowDimensions();
   const diaActual = obtenerDiaActual();
+  const esAncho = width > 600;
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['top']}>
+    <SafeAreaView style={estilosComunes.pantalla} edges={['top', 'left', 'right']}>
       <ScrollView
-        contentContainerStyle={styles.contenido}
+        contentContainerStyle={estilosComunes.scrollContenido}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.encabezado}>
+        <View style={estilosComunes.encabezado}>
           <Text style={styles.marca}>GYMTRACK</Text>
-          <Text style={styles.titulo}>Plan semanal</Text>
-          <Text style={styles.subtitulo}>
+          <Text style={estilosComunes.tituloPantalla}>Plan semanal</Text>
+          <Text style={estilosComunes.subtituloPantalla}>
             {socio.nombre} · Objetivo: {socio.objetivo}
           </Text>
         </View>
@@ -37,20 +40,21 @@ export default function InicioScreen() {
           </View>
         )}
 
-        <View style={styles.lista}>
+        <View style={esAncho ? styles.cuadricula : styles.lista}>
           {PLAN_SEMANAL.map((plan) => (
-            <TarjetaDia
-              key={plan.dia}
-              plan={plan}
-              esHoy={diaActual === plan.dia}
-              completados={completados[plan.dia].length}
-              onPress={() =>
-                router.push({
-                  pathname: '/dia/[dia]',
-                  params: { dia: plan.dia },
-                })
-              }
-            />
+            <View key={plan.dia} style={esAncho ? styles.celdaAncha : undefined}>
+              <TarjetaDia
+                plan={plan}
+                esHoy={diaActual === plan.dia}
+                completados={completados[plan.dia].length}
+                onPress={() =>
+                  router.push({
+                    pathname: '/dia/[dia]',
+                    params: { dia: plan.dia },
+                  })
+                }
+              />
+            </View>
           ))}
         </View>
       </ScrollView>
@@ -59,32 +63,11 @@ export default function InicioScreen() {
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: TEMA.fondo,
-  },
-  contenido: {
-    padding: 20,
-    paddingBottom: 32,
-    gap: 16,
-  },
-  encabezado: {
-    gap: 4,
-  },
   marca: {
     color: TEMA.acento,
     fontSize: 14,
     fontWeight: '800',
     letterSpacing: 1.5,
-  },
-  titulo: {
-    color: TEMA.textoPrimario,
-    fontSize: 28,
-    fontWeight: '800',
-  },
-  subtitulo: {
-    color: TEMA.textoSecundario,
-    fontSize: 15,
   },
   descansoCard: {
     flexDirection: 'row',
@@ -111,5 +94,14 @@ const styles = StyleSheet.create({
   },
   lista: {
     gap: 12,
+  },
+  cuadricula: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginHorizontal: -6,
+  },
+  celdaAncha: {
+    width: '50%',
+    padding: 6,
   },
 });

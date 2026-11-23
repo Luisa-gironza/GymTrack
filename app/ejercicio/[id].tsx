@@ -13,7 +13,7 @@ export default function EjercicioScreen() {
 
   if (!ejercicio) {
     return (
-      <SafeAreaView style={styles.contenedor} edges={['bottom']}>
+      <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
         <Stack.Screen options={{ title: 'Ejercicio no encontrado' }} />
         <PantallaError
           titulo="Ejercicio no encontrado"
@@ -28,7 +28,7 @@ export default function EjercicioScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['bottom']}>
+    <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
       <Stack.Screen options={{ title: ejercicio.nombre }} />
       <ScrollView
         contentContainerStyle={styles.contenido}

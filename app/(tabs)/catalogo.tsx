@@ -1,16 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ItemEjercicio } from '@/components/ItemEjercicio';
 import { TarjetaGrupo } from '@/components/TarjetaGrupo';
 import { GRUPOS_ORDEN, TEMA } from '@/constants/colores';
+import { estilosComunes } from '@/constants/estilos';
 import { EJERCICIOS } from '@/data/ejercicios';
 import { normalizar } from '@/utils/texto';
 
 export default function CatalogoScreen() {
   const [busqueda, setBusqueda] = useState('');
+  const { width } = useWindowDimensions();
+  const anchoColumna: `${number}%` = width > 600 ? '33.33%' : '50%';
   const consulta = normalizar(busqueda.trim());
 
   const resultados = consulta
@@ -18,15 +29,15 @@ export default function CatalogoScreen() {
     : [];
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['top']}>
+    <SafeAreaView style={estilosComunes.pantalla} edges={['top', 'left', 'right']}>
       <ScrollView
-        contentContainerStyle={styles.contenido}
+        contentContainerStyle={estilosComunes.scrollContenido}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.encabezado}>
-          <Text style={styles.titulo}>Catálogo</Text>
-          <Text style={styles.subtitulo}>
+        <View style={estilosComunes.encabezado}>
+          <Text style={estilosComunes.tituloPantalla}>Catálogo</Text>
+          <Text style={estilosComunes.subtituloPantalla}>
             11 grupos musculares · {EJERCICIOS.length} ejercicios
           </Text>
         </View>
@@ -91,7 +102,7 @@ export default function CatalogoScreen() {
                   key={grupo}
                   grupo={grupo}
                   cantidad={cantidad}
-                  anchoPorcentaje="50%"
+                  anchoPorcentaje={anchoColumna}
                   onPress={() =>
                     router.push({
                       pathname: '/grupo/[grupo]',
@@ -109,27 +120,6 @@ export default function CatalogoScreen() {
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: TEMA.fondo,
-  },
-  contenido: {
-    padding: 20,
-    paddingBottom: 32,
-    gap: 16,
-  },
-  encabezado: {
-    gap: 4,
-  },
-  titulo: {
-    color: TEMA.textoPrimario,
-    fontSize: 28,
-    fontWeight: '800',
-  },
-  subtitulo: {
-    color: TEMA.textoSecundario,
-    fontSize: 15,
-  },
   barraBusqueda: {
     flexDirection: 'row',
     alignItems: 'center',

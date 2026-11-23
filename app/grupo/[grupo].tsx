@@ -13,7 +13,7 @@ export default function GrupoScreen() {
 
   if (!grupoValido) {
     return (
-      <SafeAreaView style={styles.contenedor} edges={['bottom']}>
+      <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
         <Stack.Screen options={{ title: 'Grupo no encontrado' }} />
         <PantallaError
           titulo="Grupo muscular inválido"
@@ -26,7 +26,7 @@ export default function GrupoScreen() {
   const ejerciciosGrupo = EJERCICIOS.filter((item) => item.grupo === grupoValido);
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['bottom']}>
+    <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
       <Stack.Screen options={{ title: NOMBRES_GRUPO[grupoValido] }} />
       <ScrollView
         contentContainerStyle={styles.contenido}

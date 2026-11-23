@@ -1,26 +1,26 @@
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FormularioPerfil } from '@/components/FormularioPerfil';
-import { TEMA } from '@/constants/colores';
+import { estilosComunes } from '@/constants/estilos';
 import { useGym } from '@/context/GymContext';
 
 export default function PerfilScreen() {
   const { socio, setSocio } = useGym();
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['top']}>
+    <SafeAreaView style={estilosComunes.pantalla} edges={['top', 'left', 'right']}>
       <KeyboardAvoidingView
-        style={styles.flex}
+        style={estilosComunes.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
-          contentContainerStyle={styles.contenido}
+          contentContainerStyle={estilosComunes.scrollContenido}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.encabezado}>
-            <Text style={styles.titulo}>Perfil del socio</Text>
-            <Text style={styles.subtitulo}>
+          <View style={estilosComunes.encabezado}>
+            <Text style={estilosComunes.tituloPantalla}>Perfil del socio</Text>
+            <Text style={estilosComunes.subtituloPantalla}>
               Ficha asignada: {socio.fechaAsignacion}
             </Text>
           </View>
@@ -35,30 +35,3 @@ export default function PerfilScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: TEMA.fondo,
-  },
-  flex: {
-    flex: 1,
-  },
-  contenido: {
-    padding: 20,
-    paddingBottom: 36,
-    gap: 16,
-  },
-  encabezado: {
-    gap: 4,
-  },
-  titulo: {
-    color: TEMA.textoPrimario,
-    fontSize: 28,
-    fontWeight: '800',
-  },
-  subtitulo: {
-    color: TEMA.textoSecundario,
-    fontSize: 15,
-  },
-});

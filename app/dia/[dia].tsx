@@ -46,7 +46,7 @@ export default function DetalleDiaScreen() {
 
   if (!diaValido || !plan) {
     return (
-      <SafeAreaView style={styles.contenedor} edges={['bottom']}>
+      <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
         <Stack.Screen options={{ title: 'Día no encontrado' }} />
         <PantallaError
           titulo="Día inválido"
@@ -60,7 +60,7 @@ export default function DetalleDiaScreen() {
   const grupos = agruparPorGrupo(plan.ejercicios);
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['bottom']}>
+    <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
       <Stack.Screen options={{ title: `${NOMBRES_DIA[diaValido]} · ${plan.enfoque}` }} />
       <ScrollView
         contentContainerStyle={styles.contenido}

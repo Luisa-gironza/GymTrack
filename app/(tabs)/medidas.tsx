@@ -14,6 +14,7 @@ import { FormularioMedida } from '@/components/FormularioMedida';
 import { ResumenMedida } from '@/components/ResumenMedida';
 import { TarjetaMedida } from '@/components/TarjetaMedida';
 import { TEMA } from '@/constants/colores';
+import { estilosComunes } from '@/constants/estilos';
 import { useGym } from '@/context/GymContext';
 import type { Medida } from '@/types/gym';
 
@@ -31,19 +32,19 @@ export default function MedidasScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['top']}>
+    <SafeAreaView style={estilosComunes.pantalla} edges={['top', 'left', 'right']}>
       <KeyboardAvoidingView
-        style={styles.flex}
+        style={estilosComunes.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView
-          contentContainerStyle={styles.contenido}
+          contentContainerStyle={estilosComunes.scrollContenido}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.encabezado}>
-            <Text style={styles.titulo}>Medidas mensuales</Text>
-            <Text style={styles.subtitulo}>
+          <View style={estilosComunes.encabezado}>
+            <Text style={estilosComunes.tituloPantalla}>Medidas mensuales</Text>
+            <Text style={estilosComunes.subtituloPantalla}>
               Seguimiento de peso, IMC (OMS) y 8 perímetros corporales
             </Text>
           </View>
@@ -93,30 +94,6 @@ export default function MedidasScreen() {
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: TEMA.fondo,
-  },
-  flex: {
-    flex: 1,
-  },
-  contenido: {
-    padding: 20,
-    paddingBottom: 36,
-    gap: 16,
-  },
-  encabezado: {
-    gap: 4,
-  },
-  titulo: {
-    color: TEMA.textoPrimario,
-    fontSize: 28,
-    fontWeight: '800',
-  },
-  subtitulo: {
-    color: TEMA.textoSecundario,
-    fontSize: 15,
-  },
   botonToggle: {
     flexDirection: 'row',
     alignItems: 'center',

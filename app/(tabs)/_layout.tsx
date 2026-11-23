@@ -13,12 +13,12 @@ export default function TabsLayout() {
           backgroundColor: TEMA.tabBar,
           borderTopColor: TEMA.borde,
           borderTopWidth: 1,
-          minHeight: 62,
-          paddingBottom: 6,
+          minHeight: 66,
+          paddingBottom: 8,
           paddingTop: 6,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: 14,
           fontWeight: '600',
         },
       }}
