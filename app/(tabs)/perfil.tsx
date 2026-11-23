@@ -1,13 +1,37 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { FormularioPerfil } from '@/components/FormularioPerfil';
 import { TEMA } from '@/constants/colores';
+import { useGym } from '@/context/GymContext';
 
 export default function PerfilScreen() {
+  const { socio, setSocio } = useGym();
+
   return (
     <SafeAreaView style={styles.contenedor} edges={['top']}>
-      <View style={styles.cuerpo}>
-        <Text style={styles.titulo}>Perfil del socio</Text>
-      </View>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView
+          contentContainerStyle={styles.contenido}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.encabezado}>
+            <Text style={styles.titulo}>Perfil del socio</Text>
+            <Text style={styles.subtitulo}>
+              Ficha asignada: {socio.fechaAsignacion}
+            </Text>
+          </View>
+
+          <FormularioPerfil
+            key={`${socio.nombre}-${socio.edad}-${socio.objetivo}-${socio.lesiones.join(',')}`}
+            socioInicial={socio}
+            onGuardar={setSocio}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -17,12 +41,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: TEMA.fondo,
   },
-  cuerpo: {
+  flex: {
+    flex: 1,
+  },
+  contenido: {
     padding: 20,
+    paddingBottom: 36,
+    gap: 16,
+  },
+  encabezado: {
+    gap: 4,
   },
   titulo: {
     color: TEMA.textoPrimario,
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 28,
+    fontWeight: '800',
+  },
+  subtitulo: {
+    color: TEMA.textoSecundario,
+    fontSize: 15,
   },
 });
