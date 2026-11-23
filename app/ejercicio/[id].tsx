@@ -1,19 +1,23 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AlertaLesion } from '@/components/AlertaLesion';
 import { DetalleEjercicioCard } from '@/components/DetalleEjercicioCard';
 import { PantallaError } from '@/components/PantallaError';
-import { TEMA } from '@/constants/colores';
+import { TemporizadorDescanso } from '@/components/TemporizadorDescanso';
+import { estilosComunes } from '@/constants/estilos';
+import { useGym } from '@/context/GymContext';
 import { buscarEjercicioPorId } from '@/data/ejercicios';
 import { PLAN_SEMANAL } from '@/data/plan';
 
 export default function EjercicioScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { socio } = useGym();
   const ejercicio = typeof id === 'string' ? buscarEjercicioPorId(id) : undefined;
 
   if (!ejercicio) {
     return (
-      <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
+      <SafeAreaView style={estilosComunes.pantalla} edges={['bottom', 'left', 'right']}>
         <Stack.Screen options={{ title: 'Ejercicio no encontrado' }} />
         <PantallaError
           titulo="Ejercicio no encontrado"
@@ -26,14 +30,19 @@ export default function EjercicioScreen() {
   const diasAsignados = PLAN_SEMANAL.filter((plan) =>
     plan.ejercicios.includes(ejercicio.id)
   );
+  const tieneLesion = socio.lesiones.includes(ejercicio.grupo);
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={estilosComunes.pantalla} edges={['bottom', 'left', 'right']}>
       <Stack.Screen options={{ title: ejercicio.nombre }} />
       <ScrollView
-        contentContainerStyle={styles.contenido}
+        contentContainerStyle={estilosComunes.scrollContenido}
         showsVerticalScrollIndicator={false}
       >
+        {tieneLesion && (
+          <AlertaLesion grupo={ejercicio.grupo} observaciones={socio.observaciones} />
+        )}
+
         <DetalleEjercicioCard
           ejercicio={ejercicio}
           diasAsignados={diasAsignados}
@@ -41,19 +50,9 @@ export default function EjercicioScreen() {
             router.push({ pathname: '/dia/[dia]', params: { dia } })
           }
         />
+
+        <TemporizadorDescanso colorAcento={diasAsignados[0]?.color} />
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: TEMA.fondo,
-  },
-  contenido: {
-    padding: 20,
-    paddingBottom: 36,
-    gap: 16,
-  },
-});

@@ -5,7 +5,9 @@ import { BarraProgreso } from '@/components/BarraProgreso';
 import { BloqueActividad } from '@/components/BloqueActividad';
 import { ItemEjercicio } from '@/components/ItemEjercicio';
 import { PantallaError } from '@/components/PantallaError';
+import { TemporizadorDescanso } from '@/components/TemporizadorDescanso';
 import { NOMBRES_DIA, NOMBRES_GRUPO, TEMA } from '@/constants/colores';
+import { estilosComunes } from '@/constants/estilos';
 import { useGym } from '@/context/GymContext';
 import { buscarEjercicioPorId } from '@/data/ejercicios';
 import {
@@ -39,14 +41,14 @@ function agruparPorGrupo(ids: string[]): GrupoEjercicios[] {
 
 export default function DetalleDiaScreen() {
   const { dia } = useLocalSearchParams<{ dia: string }>();
-  const { completados, alternarEjercicio } = useGym();
+  const { socio, completados, alternarEjercicio } = useGym();
 
   const diaValido = typeof dia === 'string' && esDiaSemanaValido(dia) ? dia : null;
   const plan = diaValido ? obtenerPlanPorDia(diaValido) : undefined;
 
   if (!diaValido || !plan) {
     return (
-      <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
+      <SafeAreaView style={estilosComunes.pantalla} edges={['bottom', 'left', 'right']}>
         <Stack.Screen options={{ title: 'Día no encontrado' }} />
         <PantallaError
           titulo="Día inválido"
@@ -60,10 +62,10 @@ export default function DetalleDiaScreen() {
   const grupos = agruparPorGrupo(plan.ejercicios);
 
   return (
-    <SafeAreaView style={styles.contenedor} edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={estilosComunes.pantalla} edges={['bottom', 'left', 'right']}>
       <Stack.Screen options={{ title: `${NOMBRES_DIA[diaValido]} · ${plan.enfoque}` }} />
       <ScrollView
-        contentContainerStyle={styles.contenido}
+        contentContainerStyle={estilosComunes.scrollContenido}
         showsVerticalScrollIndicator={false}
       >
         <View style={[styles.cabecera, { borderLeftColor: plan.color }]}>
@@ -78,6 +80,8 @@ export default function DetalleDiaScreen() {
           total={plan.ejercicios.length}
           color={plan.color}
         />
+
+        <TemporizadorDescanso colorAcento={plan.color} />
 
         <BloqueActividad
           titulo="Calentamiento inicial"
@@ -97,6 +101,7 @@ export default function DetalleDiaScreen() {
                   ejercicio={ejercicio}
                   colorAcento={plan.color}
                   completado={completadosDia.includes(ejercicio.id)}
+                  advertenciaLesion={socio.lesiones.includes(ejercicio.grupo)}
                   onAlternar={() => alternarEjercicio(diaValido, ejercicio.id)}
                   onAbrirDetalle={() =>
                     router.push({
@@ -133,15 +138,6 @@ export default function DetalleDiaScreen() {
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: TEMA.fondo,
-  },
-  contenido: {
-    padding: 20,
-    paddingBottom: 36,
-    gap: 16,
-  },
   cabecera: {
     backgroundColor: TEMA.tarjeta,
     borderRadius: 16,

@@ -15,10 +15,12 @@ import { ItemEjercicio } from '@/components/ItemEjercicio';
 import { TarjetaGrupo } from '@/components/TarjetaGrupo';
 import { GRUPOS_ORDEN, TEMA } from '@/constants/colores';
 import { estilosComunes } from '@/constants/estilos';
+import { useGym } from '@/context/GymContext';
 import { EJERCICIOS } from '@/data/ejercicios';
 import { normalizar } from '@/utils/texto';
 
 export default function CatalogoScreen() {
+  const { socio } = useGym();
   const [busqueda, setBusqueda] = useState('');
   const { width } = useWindowDimensions();
   const anchoColumna: `${number}%` = width > 600 ? '33.33%' : '50%';
@@ -83,6 +85,7 @@ export default function CatalogoScreen() {
                 <ItemEjercicio
                   key={ejercicio.id}
                   ejercicio={ejercicio}
+                  advertenciaLesion={socio.lesiones.includes(ejercicio.grupo)}
                   onAbrirDetalle={() =>
                     router.push({
                       pathname: '/ejercicio/[id]',
@@ -103,6 +106,7 @@ export default function CatalogoScreen() {
                   grupo={grupo}
                   cantidad={cantidad}
                   anchoPorcentaje={anchoColumna}
+                  tieneLesion={socio.lesiones.includes(grupo)}
                   onPress={() =>
                     router.push({
                       pathname: '/grupo/[grupo]',
