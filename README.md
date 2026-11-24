@@ -4,8 +4,8 @@ Aplicación móvil desarrollada en **React Native + Expo Router + TypeScript (mo
 
 ## Integrantes
 
-- Integrante 1: `[Nombre completo - Código]`
-- Integrante 2: `[Nombre completo - Código]`
+- Integrante 1: `[Juan camilo Jiménez Díaz - 407271]`
+- Integrante 2: `[Luisa Gironza - 408993]`
 
 **Curso:** Desarrollo de Aplicaciones Móviles, VI semestre, Ingeniería de Sistemas, 2026-2.
 
@@ -39,7 +39,7 @@ Aplicación móvil desarrollada en **React Native + Expo Router + TypeScript (mo
 
 ## Video demostrativo
 
-- Enlace al video (máximo 5 minutos, recorrido de RF01 a RF11 en teléfono): `[Pegar enlace de YouTube no listado o Google Drive]`
+- Enlace al video: `[https://drive.google.com/file/d/1xwY6x_uT6vGipiyn_g-EiiGxcLrjaWcY/view?usp=sharing]`
 
 ## Tabla de requisitos
 
@@ -76,17 +76,16 @@ Aplicación móvil desarrollada en **React Native + Expo Router + TypeScript (mo
 - **RF10 – Temporizador de descanso de 60 s:** Disponible en el detalle del día (`/dia/[dia]`) y del ejercicio (`/ejercicio/[id]`). Permite iniciar, pausar y reiniciar una cuenta regresiva de 60 segundos; el intervalo se limpia siempre en la función de retorno de `useEffect` (`clearInterval`) al pausar o desmontar la pantalla.
 - **RF11 – Persistencia con AsyncStorage:** `GymContext` hidrata al inicio los datos guardados bajo las claves `@gymtrack/socio`, `@gymtrack/medidas` y `@gymtrack/completados` usando guardas de tipo estrictas (`unknown`), y guarda automáticamente cada cambio tras completar la carga inicial.
 
-## Capturas de pantalla
 
-> Reemplazar las rutas con las capturas tomadas en Expo Go (SDK 57) antes de la entrega final.
+## Capturas de pantalla
 
 | 1. Inicio (Plan semanal) | 2. Catálogo y búsqueda |
 | :---: | :---: |
-| ![Captura Inicio](./docs/capturas/01-inicio.png) | ![Captura Catálogo](./docs/capturas/02-catalogo.png) |
+| ![Inicio](./capturas/inicio.jpeg) | ![Catálogo](./capturas/catalogo.jpeg) |
 
 | 3. Medidas e IMC | 4. Perfil del socio |
 | :---: | :---: |
-| ![Captura Medidas](./docs/capturas/03-medidas.png) | ![Captura Perfil](./docs/capturas/04-perfil.png) |
+| ![Medidas](./capturas/medidas.jpeg) | ![Perfil](./capturas/perfil.jpeg) |
 
 ## Bitácora de investigación autónoma (T1 a T8)
 
